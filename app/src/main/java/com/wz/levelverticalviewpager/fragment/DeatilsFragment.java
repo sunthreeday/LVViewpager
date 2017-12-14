@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.wz.levelverticalviewpager.R;
 import com.wz.levelverticalviewpager.model.DesignersCase;
+import com.wz.levelverticalviewpager.model.DesignersCaseEntity;
+import com.wz.levelverticalviewpager.util.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.wz.levelverticalviewpager.util.SimulateNetAPI.getOriginalFundData;
 
 /**
  * 设计师详情第三个页面
@@ -46,7 +50,6 @@ public class DeatilsFragment extends Fragment {
     private int curIndex;
     private OnePageFragment.backOnePageListener backOnePageListener;
     private OnePageFragment.clicktoPageListener clicktoPageListener;
-    private List<DesignersCase> data;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,6 +64,7 @@ public class DeatilsFragment extends Fragment {
         // 2. 获取动画对象
         animationDrawable.start();
         if (getArguments() != null) {
+            loadData();
             ivBackIcon.setImageResource(R.drawable.back_npc);
             rightOneIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -72,6 +76,13 @@ public class DeatilsFragment extends Fragment {
             });
         }
         return view;
+    }
+
+    private void loadData() {
+        String response = getOriginalFundData(getActivity(), "caselist.json");
+        DesignersCaseEntity caseEntity = JsonUtils.parseT(response, DesignersCaseEntity.class);
+        mcaseList = caseEntity.getData().getList();
+        initView();
     }
 
     private void initView() {
@@ -101,11 +112,6 @@ public class DeatilsFragment extends Fragment {
 
     public DesignersCase getCurIndexCase() {
         return mcaseList.get(curIndex);
-    }
-
-    public void setData(List<DesignersCase> data) {
-        this.mcaseList = data;
-        initView();
     }
 
     private class CardPagerAdapter extends PagerAdapter {

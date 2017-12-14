@@ -11,20 +11,13 @@ import android.view.ViewGroup;
 
 import com.wz.levelverticalviewpager.DesignerDeatilListActivity;
 import com.wz.levelverticalviewpager.R;
-import com.wz.levelverticalviewpager.model.DesignersCase;
-import com.wz.levelverticalviewpager.model.DesignersCaseEntity;
-import com.wz.levelverticalviewpager.util.JsonUtils;
 import com.wz.levelverticalviewpager.view.VerticalPagerAdapter;
 import com.wz.levelverticalviewpager.view.VerticalViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.wz.levelverticalviewpager.util.SimulateNetAPI.getOriginalFundData;
-
 public class OnePageFragment extends Fragment {
-
-    private List<DesignersCase> mcaseList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,9 +47,6 @@ public class OnePageFragment extends Fragment {
         View view = inflater.inflate(R.layout.check_one, container, false);
         checkOne = (VerticalViewPager) view.findViewById(R.id.check_one);
         checkOne.setOffscreenPageLimit(1);
-        String response = getOriginalFundData(getActivity(), "caselist.json");
-        DesignersCaseEntity caseEntity = JsonUtils.parseT(response, DesignersCaseEntity.class);
-        mcaseList = caseEntity.getData().getList();
         if (getArguments() != null) {
             curIndex = getArguments().getInt("index");
             designer_uid = getArguments().getString("designer_uid");
@@ -125,8 +115,6 @@ public class OnePageFragment extends Fragment {
             public void onPageSelected(int position) {
                 if (position == 1) {
                     startSecondVideo();
-                } else if (position == 2) {
-                    loadCaseData();
                 } else if (position == 3) {
                     loadCaseUrl();
                 }
@@ -142,11 +130,6 @@ public class OnePageFragment extends Fragment {
         });
         checkOne.setAdapter(fragmentAdapter);
         return view;
-    }
-
-    private void loadCaseData() {
-        DeatilsFragment t = (DeatilsFragment) listFragments.get(2);
-        t.setData(mcaseList);
     }
 
     private void startSecondVideo() {
